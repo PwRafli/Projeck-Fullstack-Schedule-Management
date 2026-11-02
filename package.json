@@ -1,0 +1,20 @@
+{
+  "name": "projeck-fullstack-schedule-management",
+  "version": "1.0.0",
+  "description": "Project Fullstack Schedule Management - STIKOM PGRI Banyuwangi",
+  "main": "Dasbord/server.js",
+  "scripts": {
+    "start": "npm --prefix Dasbord start",
+    "dev": "npm --prefix Dasbord run dev",
+    "seed": "npm --prefix Dasbord run seed"
+  },
+  "keywords": [
+    "schedule",
+    "management",
+    "stikom",
+    "dashboard",
+    "fullstack"
+  ],
+  "author": "",
+  "license": "ISC"
+}

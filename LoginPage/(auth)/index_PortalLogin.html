@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jadwal Kuliah — STIKOM PGRI Banyuwangi</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            navy: {
+              deep: '#022B55',
+              primary: '#063B73',
+              accent: '#0B4F8A',
+              light: '#EAF2FF',
+              darker: '#0a1d33',
+              charcoal: '#0d1d2e',
+            },
+            portal: {
+              bg: '#F7F9FC',
+              darkText: '#12345B',
+              muted: '#64748B',
+              gold: '#F59E0B',
+              border: '#E2E8F0',
+              success: '#22C55E'
+            }
+          },
+          boxShadow: {
+            'academic': '0 20px 40px -15px rgba(6, 59, 115, 0.08), 0 0 1px 1px rgba(226, 232, 240, 0.8)',
+            'card-hover': '0 25px 50px -12px rgba(6, 59, 115, 0.15)',
+            'glow-blue': '0 0 35px rgba(11, 79, 138, 0.35)',
+            'glow-gold': '0 0 35px rgba(245, 158, 11, 0.25)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Background Grid Pattern for Academic Branding */
+    .bg-grid-pattern {
+      background-size: 36px 36px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    }
+    
+    .bg-grid-light {
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(6, 59, 115, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(6, 59, 115, 0.03) 1px, transparent 1px);
+    }
+
+    /* Soft ambient radial blur */
+    .ambient-glow-navy {
+      background: radial-gradient(circle at 50% 40%, rgba(11, 79, 138, 0.45) 0%, rgba(2, 43, 85, 0) 70%);
+    }
+
+    .ambient-glow-lecturer {
+      background: radial-gradient(circle at 60% 40%, rgba(245, 158, 11, 0.12) 0%, rgba(11, 79, 138, 0.35) 45%, rgba(13, 29, 46, 0) 75%);
+    }
+
+    /* Micro-interactions */
+    .btn-portal-primary {
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-portal-primary:hover {
+      transform: translateY(-2px);
+    }
+    .btn-portal-primary:active {
+      transform: translateY(0);
+    }
+    .btn-portal-primary:hover .btn-arrow-icon {
+      transform: translateX(4px);
+    }
+
+    .card-selection-interactive {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .card-selection-interactive:hover {
+      transform: translateY(-6px);
+    }
+
+    /* Hide scrollbars for slick look */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Input focus transitions */
+    .input-field {
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    }
+
+    /* Responsive Viewport & Dynamic Height (100dvh) */
+    html, body {
+      min-height: 100dvh;
+      overflow-x: hidden;
+      -webkit-tap-highlight-color: transparent;
+      scroll-behavior: smooth;
+    }
+
+    /* Mandatory Responsive Rule: Input font size at least 16px on mobile (<640px) to prevent iOS/Android zoom */
+    @media (max-width: 639px) {
+      input, select, textarea {
+        font-size: 16px !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-[100dvh] w-full overflow-x-hidden bg-portal-bg text-portal-darkText font-sans antialiased selection:bg-navy-light selection:text-navy-primary flex flex-col justify-between">
+
+  <!-- Top Global Header Bar (Responsive: Full horizontal on Desktop, off-canvas on Mobile) -->
+  <header class="fixed top-0 inset-x-0 z-50 bg-white/95 backdrop-blur-md border-b border-portal-border/80 h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center space-x-3">
+      <div class="w-9 h-9 rounded-xl bg-navy-primary text-white flex items-center justify-center font-bold text-xs tracking-wider shadow-sm shrink-0">
+        SPB
+      </div>
+      <div class="flex flex-col">
+        <span class="text-xs sm:text-sm font-bold tracking-tight text-navy-deep uppercase leading-tight">Jadwal Kuliah</span>
+        <span class="text-[10px] text-portal-muted font-medium truncate max-w-[150px] sm:max-w-none">STIKOM PGRI BANYUWANGI</span>
+      </div>
+    </div>
+
+    <!-- Desktop / Tablet Nav Tabs (640px+) -->
+    <div class="hidden sm:flex items-center space-x-1 sm:space-x-2 bg-slate-100/90 p-1 rounded-xl text-xs font-medium">
+      <button onclick="switchView('selection')" id="nav-btn-selection" class="px-3 py-1.5 rounded-lg transition-all text-slate-600 hover:text-navy-primary">
+        <span>Pilihan Portal</span>
+      </button>
+      <button onclick="switchView('mahasiswa')" id="nav-btn-mahasiswa" class="px-3 py-1.5 rounded-lg transition-all text-slate-600 hover:text-navy-primary flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-navy-accent"></span>
+        <span>Mahasiswa</span>
+      </button>
+      <button onclick="switchView('dosen')" id="nav-btn-dosen" class="px-3 py-1.5 rounded-lg transition-all text-slate-600 hover:text-navy-primary flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-portal-gold"></span>
+        <span>Dosen / Admin</span>
+      </button>
+    </div>
+
+    <!-- Right Actions (Desktop: Modern Dark UI link) -->
+    <div class="hidden lg:flex items-center gap-2">
+      <a href="login/index.html" class="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl bg-slate-900 text-slate-100 hover:bg-slate-800 border border-slate-700 transition shadow-sm" title="Go to Modern Dark Mode Auth UI">
+        <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+        <span>Modern Dark UI</span>
+      </a>
+    </div>
+
+    <!-- Mobile Hamburger Menu Button (<640px) -->
+    <div class="flex items-center sm:hidden gap-2">
+      <button onclick="toggleMobileNav()" id="btn-mobile-nav" class="p-2.5 rounded-xl text-navy-deep bg-slate-100 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-navy-primary min-w-[44px] min-h-[44px] flex items-center justify-center transition-colors" aria-label="Toggle Mobile Menu">
+        <svg id="icon-mobile-nav" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Off-Canvas Drawer Navigation (<640px) -->
+  <div id="mobile-nav-backdrop" onclick="closeMobileNav()" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 sm:hidden hidden opacity-0 transition-opacity duration-300"></div>
+  <aside id="mobile-nav-drawer" class="fixed top-0 right-0 bottom-0 w-72 max-w-[85vw] bg-white z-50 shadow-2xl sm:hidden transform translate-x-full transition-transform duration-300 flex flex-col justify-between p-6">
+    <div>
+      <div class="flex items-center justify-between pb-4 mb-4 border-b border-portal-border">
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-lg bg-navy-primary text-white flex items-center justify-center font-bold text-xs">
+            SPB
+          </div>
+          <div>
+            <span class="text-xs font-bold text-navy-deep block leading-tight">Jadwal Kuliah</span>
+            <span class="text-[10px] text-portal-muted">STIKOM Banyuwangi</span>
+          </div>
+        </div>
+        <button onclick="closeMobileNav()" class="p-2 rounded-lg text-slate-400 hover:text-slate-700 min-w-[44px] min-h-[44px] flex items-center justify-center" aria-label="Tutup Menu">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <p class="text-[10px] font-bold tracking-wider text-slate-400 uppercase mb-3">Navigasi Portal</p>
+      <div class="space-y-2">
+        <button onclick="switchView('selection'); closeMobileNav();" class="w-full min-h-[48px] px-4 py-3 rounded-xl text-left text-sm font-semibold flex items-center gap-3 transition-colors bg-slate-50 hover:bg-slate-100 text-slate-700">
+          <svg class="w-4 h-4 text-navy-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          <span>Pilihan Portal</span>
+        </button>
+        <button onclick="switchView('mahasiswa'); closeMobileNav();" class="w-full min-h-[48px] px-4 py-3 rounded-xl text-left text-sm font-semibold flex items-center gap-3 transition-colors bg-blue-50/60 hover:bg-blue-100/60 text-navy-primary">
+          <span class="w-2.5 h-2.5 rounded-full bg-navy-accent shrink-0"></span>
+          <span>Portal Mahasiswa</span>
+        </button>
+        <button onclick="switchView('dosen'); closeMobileNav();" class="w-full min-h-[48px] px-4 py-3 rounded-xl text-left text-sm font-semibold flex items-center gap-3 transition-colors bg-amber-50/60 hover:bg-amber-100/60 text-amber-900">
+          <span class="w-2.5 h-2.5 rounded-full bg-portal-gold shrink-0"></span>
+          <span>Portal Dosen / Admin</span>
+        </button>
+      </div>
+
+      <div class="mt-6 pt-4 border-t border-portal-border space-y-2">
+        <a href="login/index.html" class="w-full min-h-[48px] px-4 py-3 rounded-xl text-left text-xs font-semibold flex items-center gap-2 bg-slate-900 text-slate-100">
+          <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+          <span>Buka Modern Dark UI</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="pt-4 border-t border-portal-border text-[11px] text-slate-400 text-center">
+      <span class="font-bold text-slate-600 block mb-0.5">STIKOM PGRI BANYUWANGI</span>
+      <span>TA 2026/2027 • Semester Ganjil</span>
+    </div>
+  </aside>
+
+  <!-- Notification Toast Container -->
+  <div id="toast-notification" class="fixed top-20 right-4 z-50 transform translate-y-[-100px] opacity-0 transition-all duration-300 max-w-md w-full bg-white border border-portal-border rounded-2xl shadow-xl p-4 flex items-start gap-3 pointer-events-none">
+    <div id="toast-icon" class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"></div>
+    <div class="flex-1">
+      <h4 id="toast-title" class="text-sm font-bold text-navy-deep"></h4>
+      <p id="toast-message" class="text-xs text-portal-muted mt-0.5 leading-relaxed"></p>
+    </div>
+  </div>
+
+  <!-- Main View Container with dynamic swap & 100dvh support -->
+  <main class="pt-16 min-h-[calc(100dvh-4rem)] w-full overflow-x-hidden flex-1 flex flex-col">
+
+    <!-- ======================================================== -->
+    <!-- VIEW 1: PORTAL SELECTION / ENTRY PAGE                   -->
+    <!-- ======================================================== -->
+    <section id="view-selection" class="min-h-[calc(100vh-3.5rem)] flex flex-col justify-between py-12 px-4 sm:px-6 lg:px-8 bg-portal-bg bg-grid-light relative overflow-hidden">
+      <!-- Decorative background blur spots -->
+      <div class="absolute -top-32 left-1/2 -translate-x-1/2 w-96 h-96 bg-navy-light/70 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-24 right-10 w-80 h-80 bg-amber-50 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="max-w-4xl mx-auto w-full flex-1 flex flex-col justify-center my-auto z-10">
+        <!-- Institution Header -->
+        <div class="text-center mb-12 sm:mb-16">
+          <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-navy-light/60 border border-blue-200/60 mb-5">
+            <svg class="w-4 h-4 text-navy-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+              <path d="M2 17l10 5 10-5"></path>
+              <path d="M2 12l10 5 10-5"></path>
+            </svg>
+            <span class="text-xs font-bold text-navy-primary tracking-wide uppercase">STIKOM PGRI BANYUWANGI</span>
+          </div>
+
+          <h1 class="text-3xl sm:text-5xl lg:text-[54px] font-extrabold text-navy-deep tracking-tight leading-tight">
+            Jadwal Kuliah
+          </h1>
+          <p class="mt-3 text-base sm:text-lg text-portal-muted max-w-lg mx-auto font-normal">
+            Silakan pilih portal untuk melanjutkan
+          </p>
+        </div>
+
+        <!-- 2 Selection Cards (Flexible 2-column on tablet & desktop, single-column on mobile) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8 max-w-3xl mx-auto w-full">
+          
+          <!-- Card 1: Mahasiswa -->
+          <div onclick="switchView('mahasiswa')" class="card-selection-interactive group cursor-pointer bg-white rounded-3xl p-6 sm:p-8 md:p-9 border border-portal-border shadow-academic hover:shadow-card-hover hover:border-navy-accent/40 relative flex flex-col justify-between">
+            <div class="absolute top-6 right-6">
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold bg-navy-light text-navy-primary">
+                Portal Utama
+              </span>
+            </div>
+
+            <div>
+              <!-- Cap Icon -->
+              <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-navy-light/80 text-navy-primary flex items-center justify-center mb-6 sm:mb-7 group-hover:bg-navy-primary group-hover:text-white transition-colors duration-300 shadow-sm">
+                <svg class="w-7 h-7 sm:w-8 sm:h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                  <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                </svg>
+              </div>
+
+              <h2 class="text-xl sm:text-2xl font-bold text-navy-deep group-hover:text-navy-primary transition-colors">
+                Portal Mahasiswa
+              </h2>
+              <p class="mt-2.5 sm:mt-3 text-portal-muted text-xs sm:text-sm md:text-base leading-relaxed">
+                Akses jadwal kuliah, KRS, nilai, dan informasi akademik.
+              </p>
+            </div>
+
+            <div class="mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-xs sm:text-sm font-bold text-navy-primary group-hover:text-navy-accent flex items-center gap-2">
+                Masuk sebagai Mahasiswa
+                <svg class="w-4 h-4 transition-transform group-hover:translate-x-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </span>
+            </div>
+          </div>
+
+          <!-- Card 2: Dosen / Admin -->
+          <div onclick="switchView('dosen')" class="card-selection-interactive group cursor-pointer bg-white rounded-3xl p-6 sm:p-8 md:p-9 border border-portal-border shadow-academic hover:shadow-card-hover hover:border-portal-gold/50 relative flex flex-col justify-between">
+            <div class="absolute top-6 right-6">
+              <span class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-800 border border-amber-200">
+                Staff & Dosen
+              </span>
+            </div>
+
+            <div>
+              <!-- Briefcase / Dashboard Icon with subtle gold tone -->
+              <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-slate-100 text-slate-700 flex items-center justify-center mb-6 sm:mb-7 group-hover:bg-navy-charcoal group-hover:text-portal-gold transition-colors duration-300 shadow-sm">
+                <svg class="w-7 h-7 sm:w-8 sm:h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                </svg>
+              </div>
+
+              <h2 class="text-xl sm:text-2xl font-bold text-navy-deep group-hover:text-navy-primary transition-colors">
+                Portal Dosen / Admin
+              </h2>
+              <p class="mt-2.5 sm:mt-3 text-portal-muted text-xs sm:text-sm md:text-base leading-relaxed">
+                Kelola jadwal, mata kuliah, dosen, ruangan, dan data akademik.
+              </p>
+            </div>
+
+            <div class="mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-slate-100 flex items-center justify-between">
+              <span class="text-xs sm:text-sm font-bold text-slate-800 group-hover:text-portal-gold flex items-center gap-2">
+                Masuk sebagai Dosen / Admin
+                <svg class="w-4 h-4 transition-transform group-hover:translate-x-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Selection Footer -->
+      <footer class="mt-12 text-center text-xs text-portal-muted border-t border-slate-200/60 pt-6">
+        <p>© STIKOM PGRI BANYUWANGI 2026. Hak Cipta Dilindungi Undang-Undang.</p>
+        <div class="mt-2 flex items-center justify-center gap-4 text-[11px] text-slate-400">
+          <span>Sistem Informasi Akademik</span>
+          <span>•</span>
+          <span>Helpdesk: BAAK & IT Support</span>
+          <span>•</span>
+          <span class="flex items-center gap-1 text-emerald-600 font-medium">
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            SSL 256-bit Encrypted
+          </span>
+        </div>
+      </footer>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- VIEW 2: LOGIN PAGE — MAHASISWA                           -->
+    <!-- Split-screen on Desktop (>1024px), Adaptive Centered Card on Tablet & Mobile -->
+    <!-- ======================================================== -->
+    <section id="view-mahasiswa" class="hidden min-h-[calc(100dvh-4rem)] flex-col lg:flex-row w-full bg-portal-bg">
+      
+      <!-- LEFT SIDE: Academic Visual Branding Panel (Split-screen on Desktop >1024px) -->
+      <div class="hidden lg:flex lg:w-1/2 bg-navy-deep relative flex-col justify-between p-8 sm:p-12 lg:p-16 overflow-hidden text-white bg-grid-pattern lg:min-h-full">
+        <!-- Abstract gradient atmosphere -->
+        <div class="absolute inset-0 ambient-glow-navy pointer-events-none"></div>
+        <div class="absolute -top-24 -left-24 w-96 h-96 bg-navy-accent/30 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-20 -right-20 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <!-- Top branding indicator -->
+        <div class="relative z-10 flex items-center justify-between">
+          <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/10 text-xs font-semibold tracking-wide">
+            <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+            <span>PORTAL AKADEMIK</span>
+          </div>
+          <span class="text-xs text-blue-200/70 font-mono hidden sm:inline">v3.4.1</span>
+        </div>
+
+        <!-- Center: Academic Icon & Core Message -->
+        <div class="relative z-10 my-auto py-8 lg:py-0 max-w-xl">
+          <!-- Large graduation-cap academic icon in the center -->
+          <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-br from-navy-accent to-navy-primary flex items-center justify-center shadow-glow-blue border border-white/20 mb-8 transform -rotate-1 transition-transform hover:rotate-0 duration-300">
+            <svg class="w-10 h-10 sm:w-12 sm:h-12 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+              <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+            </svg>
+          </div>
+
+          <!-- Large Heading -->
+          <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+            Portal Mahasiswa
+          </h1>
+
+          <!-- Supporting Text -->
+          <p class="mt-5 text-blue-100/80 text-base sm:text-lg leading-relaxed font-normal">
+            Masuk untuk mengakses jadwal kuliah, ruang belajar, KRS, nilai akademik, dan informasi perkuliahan Anda.
+          </p>
+
+          <!-- Academic Quick Highlights -->
+          <div class="mt-8 grid grid-cols-2 gap-3 pt-6 border-t border-white/10 text-xs text-blue-200/90 font-medium">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span>Jadwal Terintegrasi Real-time</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span>Kartu Rencana Studi (KRS)</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span>Presensi & Nilai Semester</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span>Informasi Ruangan & Dosen</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom-Left: STIKOM PGRI Banyuwangi logo & credential badge -->
+        <div class="relative z-10 pt-6 border-t border-white/10 flex items-center justify-between">
+          <div class="flex items-center space-x-3.5">
+            <div class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 text-white font-black text-sm">
+              <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 6v6l4 2"></path>
+              </svg>
+            </div>
+            <div>
+              <p class="font-bold text-sm tracking-wide text-white uppercase">STIKOM PGRI BANYUWANGI</p>
+              <p class="text-xs text-blue-200/70">Sekolah Tinggi Ilmu Komputer PGRI Banyuwangi</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT SIDE: Adaptive Form Container (Split-screen on desktop, Centered Card on tablet, Full-width card on mobile) -->
+      <div class="w-full lg:w-1/2 flex flex-col justify-between p-4 sm:p-6 md:p-8 lg:p-12 xl:p-16 bg-[#F7F9FC] min-h-[calc(100dvh-4rem)]">
+        
+        <!-- Top: Back Button -->
+        <div class="w-full max-w-md mx-auto flex items-center justify-between mb-4 sm:mb-6">
+          <button onclick="switchView('selection')" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-full text-xs font-semibold bg-white border border-portal-border text-portal-muted hover:text-navy-primary hover:border-navy-primary/30 shadow-sm transition-all group min-h-[44px]">
+            <svg class="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            <span>← Kembali ke Beranda</span>
+          </button>
+
+          <span class="text-xs text-slate-500 font-medium">Mahasiswa Aktif</span>
+        </div>
+
+        <!-- Login Form Card (Constrained max-w-md on tablet, full-width card with comfortable padding on mobile) -->
+        <div class="w-full max-w-md mx-auto my-auto py-2">
+          <div class="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-9 border border-portal-border/90 shadow-academic">
+            
+            <!-- Mobile/Tablet University Header (Hidden on lg+ where Left Split Screen visual exists) -->
+            <div class="lg:hidden flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+              <div class="w-10 h-10 rounded-xl bg-navy-primary text-white flex items-center justify-center font-bold text-xs shadow-sm shrink-0">
+                SPB
+              </div>
+              <div class="min-w-0">
+                <span class="text-xs font-bold text-navy-deep uppercase block leading-tight truncate">STIKOM PGRI BANYUWANGI</span>
+                <span class="text-[11px] text-portal-muted font-medium">Portal Akademik Mahasiswa</span>
+              </div>
+            </div>
+
+            <!-- Main Heading -->
+            <div class="mb-6">
+              <h2 class="text-2xl sm:text-3xl font-extrabold text-navy-deep tracking-tight">
+                Selamat Datang
+              </h2>
+              <p class="mt-2 text-xs sm:text-sm text-portal-muted font-normal leading-relaxed">
+                Silakan masuk menggunakan NIM (Nomor Induk Mahasiswa) institusi Anda.
+              </p>
+            </div>
+
+            <!-- Interactive Error Alert Container -->
+            <div id="mhs-error-banner" class="hidden mb-6 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs sm:text-sm font-medium items-start gap-3">
+              <svg class="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <div class="flex-1">
+                <span class="font-bold">Otentikasi Gagal:</span>
+                <p id="mhs-error-text" class="mt-0.5">NIM atau kata sandi yang Anda masukkan tidak sesuai.</p>
+              </div>
+              <button onclick="dismissError('mhs-error-banner')" class="text-red-400 hover:text-red-700 p-1 min-w-[32px] min-h-[32px] flex items-center justify-center">
+                ✕
+              </button>
+            </div>
+
+            <!-- FORM ELEMENT -->
+            <form id="form-mahasiswa" onsubmit="handleLoginSubmit(event, 'mahasiswa')" novalidate class="space-y-5">
+              
+              <!-- Input 1: NIM -->
+              <div class="space-y-1.5">
+                <label for="mhs-nim" class="block text-xs font-bold text-navy-deep tracking-wider uppercase">
+                  NIM (NOMOR INDUK MAHASISWA)
+                </label>
+                <div class="relative rounded-2xl shadow-sm">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-portal-muted group-focus-within:text-navy-primary">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  </div>
+                  <input 
+                    type="text" 
+                    id="mhs-nim" 
+                    name="nim"
+                    required
+                    placeholder="Masukkan NIM Anda"
+                    class="input-field block w-full pl-12 pr-4 min-h-[48px] h-12 sm:h-14 rounded-2xl bg-white border border-portal-border text-navy-deep placeholder-slate-400 text-[16px] sm:text-base font-medium focus:outline-none focus:border-navy-primary focus:ring-4 focus:ring-navy-light shadow-sm"
+                    autocomplete="username"
+                    inputmode="numeric"
+                  >
+                </div>
+              </div>
+
+              <!-- Input 2: Kata Sandi -->
+              <div class="space-y-1.5">
+                <div class="flex items-center justify-between">
+                  <label for="mhs-password" class="block text-xs font-bold text-navy-deep tracking-wider uppercase">
+                    KATA SANDI
+                  </label>
+                  <a href="javascript:void(0)" onclick="showForgotModal('mahasiswa')" class="text-xs font-semibold text-navy-accent hover:text-navy-primary transition-colors py-1">
+                    Lupa Sandi?
+                  </a>
+                </div>
+                
+                <div class="relative rounded-2xl shadow-sm">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-portal-muted">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                  </div>
+                  <input 
+                    type="password" 
+                    id="mhs-password" 
+                    name="password"
+                    required
+                    placeholder="Masukkan kata sandi"
+                    class="input-field block w-full pl-12 pr-12 min-h-[48px] h-12 sm:h-14 rounded-2xl bg-white border border-portal-border text-navy-deep placeholder-slate-400 text-[16px] sm:text-base font-medium focus:outline-none focus:border-navy-primary focus:ring-4 focus:ring-navy-light shadow-sm"
+                    autocomplete="current-password"
+                  >
+                  <button type="button" onclick="togglePasswordVisibility('mhs-password', 'mhs-eye-icon')" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-navy-deep focus:outline-none min-w-[44px] justify-center" aria-label="Toggle password view">
+                    <svg id="mhs-eye-icon" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Remember me checkbox -->
+              <div class="flex items-center justify-between text-xs text-portal-muted pt-1">
+                <label class="flex items-center gap-2 cursor-pointer select-none">
+                  <input type="checkbox" checked class="w-4 h-4 rounded border-slate-300 text-navy-primary focus:ring-navy-accent">
+                  <span>Ingat perangkat ini selama 30 hari</span>
+                </label>
+              </div>
+
+              <!-- Primary Button (Touch target min-h-[48px]) -->
+              <button 
+                type="submit" 
+                id="mhs-submit-btn"
+                class="btn-portal-primary w-full min-h-[48px] h-12 sm:h-14 rounded-2xl bg-navy-primary hover:bg-navy-deep text-white font-bold text-sm sm:text-base tracking-wider flex items-center justify-center gap-3 shadow-lg shadow-navy-primary/20 hover:shadow-navy-primary/40 focus:outline-none focus:ring-4 focus:ring-navy-light active:scale-[0.99] uppercase transition"
+              >
+                <span>MASUK KE PORTAL</span>
+                <svg class="btn-arrow-icon w-5 h-5 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </button>
+            </form>
+
+            <!-- Quick Test Credentials Hint -->
+            <div class="mt-6 p-3 rounded-xl bg-blue-50/70 border border-blue-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] text-navy-accent">
+              <span>💡 Akun Uji Coba: NIM <strong>202410101</strong> / sandi <strong>stikom2026</strong></span>
+              <button onclick="fillDemoCredentials('mahasiswa')" class="font-bold underline hover:text-navy-deep self-start sm:self-auto py-1">Isi Otomatis</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom: Small Security Indicator & Footer -->
+        <div class="w-full max-w-md mx-auto pt-4 sm:pt-6 border-t border-slate-200/70 flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
+          <div class="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 tracking-wider">
+            <span>🔒</span>
+            <span class="tracking-widest uppercase text-[11px]">SECURE CONNECTION</span>
+          </div>
+          <p class="text-xs text-portal-muted font-medium">
+            © STIKOM PGRI BANYUWANGI 2026
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- VIEW 3: LOGIN PAGE — DOSEN / ADMIN                       -->
+    <!-- Split-screen on Desktop (>1024px), Adaptive Centered Card on Tablet & Mobile -->
+    <!-- ======================================================== -->
+    <section id="view-dosen" class="hidden min-h-[calc(100dvh-4rem)] flex-col lg:flex-row w-full bg-portal-bg">
+      
+      <!-- LEFT SIDE: Educator Visual Branding Panel (Split-screen on Desktop >1024px) -->
+      <div class="hidden lg:flex lg:w-1/2 bg-[#08182b] relative flex-col justify-between p-8 sm:p-12 lg:p-16 overflow-hidden text-white bg-grid-pattern lg:min-h-full">
+        <!-- Abstract gradient atmosphere with gold and navy mix -->
+        <div class="absolute inset-0 ambient-glow-lecturer pointer-events-none"></div>
+        <div class="absolute -top-24 -left-24 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -right-24 w-80 h-80 bg-blue-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+        <!-- Top branding indicator -->
+        <div class="relative z-10 flex items-center justify-between">
+          <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-amber-400/30 text-xs font-semibold tracking-wide">
+            <span class="w-2 h-2 rounded-full bg-portal-gold"></span>
+            <span class="text-amber-100">PORTAL PENDIDIK & STAF</span>
+          </div>
+          <span class="text-xs text-slate-400 font-mono hidden sm:inline">AIMS Enterprise v4.0</span>
+        </div>
+
+        <!-- Center: Briefcase / Dashboard Icon & Message -->
+        <div class="relative z-10 my-auto py-8 lg:py-0 max-w-xl">
+          <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-br from-slate-800 to-navy-deep flex items-center justify-center shadow-glow-gold border border-amber-400/30 mb-8 transform rotate-1 transition-transform hover:rotate-0 duration-300">
+            <svg class="w-10 h-10 sm:w-12 sm:h-12 text-portal-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+            </svg>
+          </div>
+
+          <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+            Portal Pengajar
+          </h1>
+
+          <p class="mt-5 text-slate-300 text-base sm:text-lg leading-relaxed font-normal">
+            Masuk untuk mengelola jadwal perkuliahan, absensi, materi ajar, evaluasi akademik, dan aktivitas pembelajaran.
+          </p>
+
+          <div class="mt-8 grid grid-cols-2 gap-3 pt-6 border-t border-white/10 text-xs text-slate-300 font-medium">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-portal-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span>Monitoring Jadwal & Kelas</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-portal-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span>Presensi & Jurnal Mengajar</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-portal-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span>Input Nilai UTS / UAS</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4 text-portal-gold shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+              <span>Persetujuan KRS Mahasiswa</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom-Left: STIKOM PGRI Banyuwangi logo -->
+        <div class="relative z-10 pt-6 border-t border-white/10 flex items-center justify-between">
+          <div class="flex items-center space-x-3.5">
+            <div class="w-10 h-10 rounded-xl bg-slate-800/80 backdrop-blur-md flex items-center justify-center border border-amber-400/40 text-portal-gold font-black text-sm">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <line x1="3" y1="9" x2="21" y2="9"></line>
+                <line x1="9" y1="21" x2="9" y2="9"></line>
+              </svg>
+            </div>
+            <div>
+              <p class="font-bold text-sm tracking-wide text-white uppercase">STIKOM PGRI BANYUWANGI</p>
+              <p class="text-xs text-slate-400">Pusat Data Akademik & Tata Kelola Kampus</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT SIDE: Adaptive Form Container -->
+      <div class="w-full lg:w-1/2 flex flex-col justify-between p-4 sm:p-6 md:p-8 lg:p-12 xl:p-16 bg-[#F7F9FC] min-h-[calc(100dvh-4rem)]">
+        
+        <!-- Top Button: Back to Home -->
+        <div class="w-full max-w-md mx-auto flex items-center justify-between mb-4 sm:mb-6">
+          <button onclick="switchView('selection')" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-full text-xs font-semibold bg-white border border-portal-border text-portal-muted hover:text-navy-primary hover:border-navy-primary/30 shadow-sm transition-all group min-h-[44px]">
+            <svg class="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            <span>← Kembali ke Beranda</span>
+          </button>
+
+          <span class="inline-flex items-center gap-1.5 text-xs text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200 font-medium">
+            <span class="w-1.5 h-1.5 rounded-full bg-portal-gold"></span>
+            Akses Khusus Dosen
+          </span>
+        </div>
+
+        <!-- Login Form Card -->
+        <div class="w-full max-w-md mx-auto my-auto py-2">
+          <div class="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-8 md:p-9 border border-portal-border/90 shadow-academic">
+            
+            <!-- Mobile/Tablet University Header (Hidden on lg+ where Left Split Screen Visual exists) -->
+            <div class="lg:hidden flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
+              <div class="w-10 h-10 rounded-xl bg-slate-900 text-portal-gold flex items-center justify-center font-bold text-xs shadow-sm border border-amber-400/30 shrink-0">
+                DSN
+              </div>
+              <div class="min-w-0">
+                <span class="text-xs font-bold text-navy-deep uppercase block leading-tight truncate">STIKOM PGRI BANYUWANGI</span>
+                <span class="text-[11px] text-amber-800 font-medium">Portal Dosen & Tenaga Pendidik</span>
+              </div>
+            </div>
+
+            <!-- Heading -->
+            <div class="mb-6">
+              <h2 class="text-2xl sm:text-3xl font-extrabold text-navy-deep tracking-tight">
+                Akses Dosen
+              </h2>
+              <p class="mt-2 text-xs sm:text-sm text-portal-muted font-normal leading-relaxed">
+                Silakan masuk menggunakan Kode Dosen (Username) resmi Anda.
+              </p>
+            </div>
+
+            <!-- Error Alert Banner -->
+            <div id="dsn-error-banner" class="hidden mb-6 p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs sm:text-sm font-medium items-start gap-3">
+              <svg class="w-5 h-5 text-red-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <div class="flex-1">
+                <span class="font-bold">Otentikasi Gagal:</span>
+                <p id="dsn-error-text" class="mt-0.5">Kode Dosen atau kata sandi tidak valid.</p>
+              </div>
+              <button onclick="dismissError('dsn-error-banner')" class="text-red-400 hover:text-red-700 p-1 min-w-[32px] min-h-[32px] flex items-center justify-center">
+                ✕
+              </button>
+            </div>
+
+            <!-- FORM -->
+            <form id="form-dosen" onsubmit="handleLoginSubmit(event, 'dosen')" novalidate class="space-y-5">
+              
+              <!-- Label: KODE DOSEN / USERNAME -->
+              <div class="space-y-1.5">
+                <label for="dsn-username" class="block text-xs font-bold text-navy-deep tracking-wider uppercase">
+                  KODE DOSEN / USERNAME
+                </label>
+                <div class="relative rounded-2xl shadow-sm">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-portal-muted group-focus-within:text-navy-primary">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  </div>
+                  <input 
+                    type="text" 
+                    id="dsn-username" 
+                    name="username"
+                    required
+                    placeholder="Masukkan kode dosen"
+                    class="input-field block w-full pl-12 pr-4 min-h-[48px] h-12 sm:h-14 rounded-2xl bg-white border border-portal-border text-navy-deep placeholder-slate-400 text-[16px] sm:text-base font-medium focus:outline-none focus:border-navy-primary focus:ring-4 focus:ring-navy-light shadow-sm"
+                    autocomplete="username"
+                  >
+                </div>
+              </div>
+
+              <!-- Label: KATA SANDI -->
+              <div class="space-y-1.5">
+                <div class="flex items-center justify-between">
+                  <label for="dsn-password" class="block text-xs font-bold text-navy-deep tracking-wider uppercase">
+                    KATA SANDI
+                  </label>
+                  <a href="javascript:void(0)" onclick="showForgotModal('dosen')" class="text-xs font-semibold text-navy-accent hover:text-navy-primary transition-colors py-1">
+                    Lupa Sandi?
+                  </a>
+                </div>
+                
+                <div class="relative rounded-2xl shadow-sm">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-portal-muted">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                      <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                  </div>
+                  <input 
+                    type="password" 
+                    id="dsn-password" 
+                    name="password"
+                    required
+                    placeholder="Masukkan kata sandi"
+                    class="input-field block w-full pl-12 pr-12 min-h-[48px] h-12 sm:h-14 rounded-2xl bg-white border border-portal-border text-navy-deep placeholder-slate-400 text-[16px] sm:text-base font-medium focus:outline-none focus:border-navy-primary focus:ring-4 focus:ring-navy-light shadow-sm"
+                    autocomplete="current-password"
+                  >
+                  <button type="button" onclick="togglePasswordVisibility('dsn-password', 'dsn-eye-icon')" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-navy-deep focus:outline-none min-w-[44px] justify-center" aria-label="Toggle password view">
+                    <svg id="dsn-eye-icon" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                      <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Staff 2FA / Session Token notice -->
+              <div class="flex items-center justify-between text-xs text-portal-muted pt-1">
+                <label class="flex items-center gap-2 cursor-pointer select-none">
+                  <input type="checkbox" checked class="w-4 h-4 rounded border-slate-300 text-navy-primary focus:ring-navy-accent">
+                  <span>Ingat akun pengajar di browser ini</span>
+                </label>
+              </div>
+
+              <!-- Primary button (Touch target min-h-[48px]) -->
+              <button 
+                type="submit" 
+                id="dsn-submit-btn"
+                class="btn-portal-primary w-full min-h-[48px] h-12 sm:h-14 rounded-2xl bg-navy-deep hover:bg-[#04203e] text-white font-bold text-sm sm:text-base tracking-wider flex items-center justify-center gap-3 shadow-lg shadow-navy-deep/20 hover:shadow-navy-deep/40 focus:outline-none focus:ring-4 focus:ring-amber-200 active:scale-[0.99] uppercase border-t border-white/10 transition"
+              >
+                <span>MASUK DASHBOARD</span>
+                <svg class="btn-arrow-icon w-5 h-5 text-portal-gold transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+              </button>
+            </form>
+
+            <!-- Quick Test Credentials Hint -->
+            <div class="mt-6 p-3 rounded-xl bg-amber-50/80 border border-amber-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-[11px] text-amber-900">
+              <span>💡 Akun Uji Coba: Kode Dosen <strong>DSN-042</strong> / sandi <strong>dosen2026</strong></span>
+              <button onclick="fillDemoCredentials('dosen')" class="font-bold underline hover:text-navy-deep self-start sm:self-auto py-1">Isi Otomatis</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom: Small Security Indicator & Footer -->
+        <div class="w-full max-w-md mx-auto pt-4 sm:pt-6 border-t border-slate-200/70 flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
+          <div class="inline-flex items-center gap-2 text-xs font-semibold text-slate-500 tracking-wider">
+            <span>🔒</span>
+            <span class="tracking-widest uppercase text-[11px]">SECURE CONNECTION</span>
+          </div>
+          <p class="text-xs text-portal-muted font-medium">
+            © STIKOM PGRI BANYUWANGI 2026
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Forgot Password / BAAK Help Modal -->
+  <div id="forgot-modal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl border border-portal-border relative animate-in fade-in zoom-in duration-200">
+      
+      <div class="w-12 h-12 rounded-2xl bg-navy-light text-navy-primary flex items-center justify-center mb-4">
+        <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+        </svg>
+      </div>
+
+      <h3 class="text-xl font-bold text-navy-deep" id="modal-title">Bantuan Pemulihan Sandi</h3>
+      <p class="text-sm text-portal-muted mt-2 leading-relaxed" id="modal-desc">
+        Untuk menjaga integritas data akademik STIKOM PGRI Banyuwangi, reset kata sandi dilakukan melalui verifikasi BAAK atau email institusi resmi (@stikompgri-bwi.ac.id).
+      </p>
+
+      <div class="mt-6 space-y-3">
+        <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200/80 text-xs">
+          <p class="font-bold text-navy-deep">Lokasi Layanan Mandiri BAAK:</p>
+          <p class="text-portal-muted mt-0.5">Gedung Rektorat Lt. 1, Kampus STIKOM PGRI Banyuwangi</p>
+          <p class="text-portal-muted mt-0.5">Senin - Jumat: 08.00 - 15.30 WIB</p>
+        </div>
+
+        <div class="p-3.5 bg-blue-50/70 rounded-xl border border-blue-200/60 text-xs text-navy-accent flex items-center justify-between">
+          <span>Hubungi Helpdesk WhatsApp</span>
+          <span class="font-bold">+62 812-3456-7890</span>
+        </div>
+      </div>
+
+      <div class="mt-8 flex justify-end">
+        <button onclick="closeForgotModal()" class="w-full py-3 rounded-xl bg-navy-primary hover:bg-navy-deep text-white text-sm font-semibold transition-colors">
+          Mengerti & Tutup
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Current Active View Tracker
+    let currentActiveView = 'selection';
+
+    /**
+     * Mobile Navigation Drawer Toggle Handler
+     */
+    function toggleMobileNav() {
+      const drawer = document.getElementById('mobile-nav-drawer');
+      const backdrop = document.getElementById('mobile-nav-backdrop');
+      if (!drawer || !backdrop) return;
+      const isClosed = drawer.classList.contains('translate-x-full');
+      if (isClosed) {
+        backdrop.classList.remove('hidden');
+        requestAnimationFrame(() => {
+          backdrop.classList.remove('opacity-0');
+          backdrop.classList.add('opacity-100');
+          drawer.classList.remove('translate-x-full');
+          drawer.classList.add('translate-x-0');
+        });
+      } else {
+        closeMobileNav();
+      }
+    }
+
+    function closeMobileNav() {
+      const drawer = document.getElementById('mobile-nav-drawer');
+      const backdrop = document.getElementById('mobile-nav-backdrop');
+      if (!drawer || !backdrop) return;
+      drawer.classList.remove('translate-x-0');
+      drawer.classList.add('translate-x-full');
+      backdrop.classList.remove('opacity-100');
+      backdrop.classList.add('opacity-0');
+      setTimeout(() => {
+        backdrop.classList.add('hidden');
+      }, 300);
+    }
+
+    /**
+     * View Switcher Handler
+     * Handles switching between Selection, Mahasiswa, and Dosen views with smooth transition
+     */
+    function switchView(viewName) {
+      const views = {
+        selection: document.getElementById('view-selection'),
+        mahasiswa: document.getElementById('view-mahasiswa'),
+        dosen: document.getElementById('view-dosen'),
+      };
+
+      const buttons = {
+        selection: document.getElementById('nav-btn-selection'),
+        mahasiswa: document.getElementById('nav-btn-mahasiswa'),
+        dosen: document.getElementById('nav-btn-dosen'),
+      };
+
+      // Hide all views
+      Object.keys(views).forEach(key => {
+        if (views[key]) {
+          views[key].classList.add('hidden');
+          views[key].classList.remove('flex');
+        }
+        if (buttons[key]) {
+          buttons[key].classList.remove('bg-white', 'text-navy-deep', 'shadow-sm', 'font-bold');
+          buttons[key].classList.add('text-slate-600');
+        }
+      });
+
+      // Show selected view
+      if (views[viewName]) {
+        views[viewName].classList.remove('hidden');
+        views[viewName].classList.add('flex');
+      }
+
+      // Update active nav button
+      if (buttons[viewName]) {
+        buttons[viewName].classList.add('bg-white', 'text-navy-deep', 'shadow-sm', 'font-bold');
+        buttons[viewName].classList.remove('text-slate-600');
+      }
+
+      currentActiveView = viewName;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Dismiss any existing alerts
+      dismissError('mhs-error-banner');
+      dismissError('dsn-error-banner');
+    }
+
+    /**
+     * Password Visibility Toggler
+     */
+    function togglePasswordVisibility(inputId, iconId) {
+      const input = document.getElementById(inputId);
+      const icon = document.getElementById(iconId);
+
+      if (!input || !icon) return;
+
+      if (input.type === 'password') {
+        input.type = 'text';
+        // Change to Eye Off Icon
+        icon.innerHTML = `
+          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+          <line x1="1" y1="1" x2="23" y2="23"></line>
+        `;
+      } else {
+        input.type = 'password';
+        // Restore Eye Open Icon
+        icon.innerHTML = `
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+          <circle cx="12" cy="12" r="3"></circle>
+        `;
+      }
+    }
+
+    /**
+     * Demo Credential Autofill Helper
+     */
+    function fillDemoCredentials(type) {
+      if (type === 'mahasiswa') {
+        const nimInput = document.getElementById('mhs-nim');
+        const passInput = document.getElementById('mhs-password');
+        if (nimInput && passInput) {
+          nimInput.value = '202410101';
+          passInput.value = 'stikom2026';
+          showToast('info', 'Data Terisi', 'Kredensial simulasi mahasiswa telah dimasukkan.');
+        }
+      } else {
+        const userInput = document.getElementById('dsn-username');
+        const passInput = document.getElementById('dsn-password');
+        if (userInput && passInput) {
+          userInput.value = 'DSN-042';
+          passInput.value = 'dosen2026';
+          showToast('info', 'Data Terisi', 'Kredensial simulasi dosen telah dimasukkan.');
+        }
+      }
+    }
+
+    /**
+     * Form Submit & Authentication Simulation
+     */
+    function handleLoginSubmit(event, role) {
+      event.preventDefault();
+
+      if (role === 'mahasiswa') {
+        const nim = document.getElementById('mhs-nim').value.trim();
+        const pass = document.getElementById('mhs-password').value.trim();
+        const submitBtn = document.getElementById('mhs-submit-btn');
+
+        // Validation rule
+        if (!nim || !pass) {
+          showInlineError('mhs-error-banner', 'mhs-error-text', 'Silakan lengkapi NIM dan kata sandi Anda.');
+          return;
+        }
+
+        // Simulating authentication state
+        setButtonLoading(submitBtn, true, 'MEMVERIFIKASI...');
+
+        setTimeout(() => {
+          setButtonLoading(submitBtn, false, 'MASUK KE PORTAL →');
+
+          // Check credentials
+          if (nim === '202410101' && pass === 'stikom2026') {
+            dismissError('mhs-error-banner');
+            showToast('success', 'Autentikasi Berhasil', 'Selamat datang di Portal Mahasiswa STIKOM PGRI Banyuwangi. Mengalihkan ke dashboard...');
+            try {
+              sessionStorage.setItem('scheduler_user_role', 'mahasiswa');
+              sessionStorage.setItem('scheduler_user_type', 'student');
+              sessionStorage.setItem('scheduler_user_name', 'Bagus Pratama');
+              sessionStorage.setItem('scheduler_user_id', '202410101');
+            } catch (e) {}
+            setTimeout(() => {
+              window.location.href = '../../Dasbord/index.html';
+            }, 1000);
+          } else {
+            showInlineError('mhs-error-banner', 'mhs-error-text', 'NIM atau kata sandi yang Anda masukkan tidak sesuai.');
+          }
+        }, 800);
+
+      } else if (role === 'dosen') {
+        const username = document.getElementById('dsn-username').value.trim();
+        const pass = document.getElementById('dsn-password').value.trim();
+        const submitBtn = document.getElementById('dsn-submit-btn');
+
+        if (!username || !pass) {
+          showInlineError('dsn-error-banner', 'dsn-error-text', 'Silakan masukkan Kode Dosen dan kata sandi Anda.');
+          return;
+        }
+
+        setButtonLoading(submitBtn, true, 'MEMVERIFIKASI...');
+
+        setTimeout(() => {
+          setButtonLoading(submitBtn, false, 'MASUK DASHBOARD →');
+
+          if (username === 'DSN-042' && pass === 'dosen2026') {
+            dismissError('dsn-error-banner');
+            showToast('success', 'Akses Diberikan', 'Selamat bertugas di Portal Pengajar STIKOM PGRI Banyuwangi. Mengalihkan ke dashboard...');
+            try {
+              sessionStorage.setItem('scheduler_user_role', 'dosen');
+              sessionStorage.setItem('scheduler_user_type', 'lecturer');
+              sessionStorage.setItem('scheduler_user_name', 'Dr. Ir. Hendra Saputra, M.T.');
+              sessionStorage.setItem('scheduler_user_id', 'DSN-042');
+            } catch (e) {}
+            setTimeout(() => {
+              window.location.href = '../../Dasbord/index.html';
+            }, 1000);
+          } else {
+            showInlineError('dsn-error-banner', 'dsn-error-text', 'Kode Dosen atau kata sandi yang Anda masukkan tidak sesuai.');
+          }
+        }, 800);
+      }
+    }
+
+    /**
+     * UI Helper: Set button loading state
+     */
+    function setButtonLoading(button, isLoading, text) {
+      if (!button) return;
+      if (isLoading) {
+        button.disabled = true;
+        button.classList.add('opacity-80', 'cursor-wait');
+        button.innerHTML = `
+          <svg class="animate-spin -ml-1 mr-2 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span>${text}</span>
+        `;
+      } else {
+        button.disabled = false;
+        button.classList.remove('opacity-80', 'cursor-wait');
+        button.innerHTML = `
+          <span>${text}</span>
+          <svg class="btn-arrow-icon w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        `;
+      }
+    }
+
+    /**
+     * UI Helper: Show Inline Form Error
+     */
+    function showInlineError(bannerId, textId, message) {
+      const banner = document.getElementById(bannerId);
+      const textElem = document.getElementById(textId);
+      if (banner && textElem) {
+        textElem.textContent = message;
+        banner.classList.remove('hidden');
+        banner.classList.add('flex');
+      }
+    }
+
+    /**
+     * UI Helper: Dismiss Inline Form Error
+     */
+    function dismissError(bannerId) {
+      const banner = document.getElementById(bannerId);
+      if (banner) {
+        banner.classList.add('hidden');
+        banner.classList.remove('flex');
+      }
+    }
+
+    /**
+     * UI Helper: Toast Notifications
+     */
+    let toastTimeout;
+    function showToast(type, title, message) {
+      const toast = document.getElementById('toast-notification');
+      const toastIcon = document.getElementById('toast-icon');
+      const toastTitle = document.getElementById('toast-title');
+      const toastMsg = document.getElementById('toast-message');
+
+      if (!toast) return;
+      clearTimeout(toastTimeout);
+
+      if (type === 'success') {
+        toastIcon.className = 'w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0';
+        toastIcon.innerHTML = `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>`;
+      } else {
+        toastIcon.className = 'w-8 h-8 rounded-lg bg-blue-100 text-navy-primary flex items-center justify-center shrink-0';
+        toastIcon.innerHTML = `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
+      }
+
+      toastTitle.textContent = title;
+      toastMsg.textContent = message;
+
+      toast.classList.remove('opacity-0', 'translate-y-[-100px]');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      toastTimeout = setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-[-100px]');
+        toast.classList.remove('opacity-100', 'translate-y-0');
+      }, 4500);
+    }
+
+    /**
+     * Forgot Password Modal Control
+     */
+    function showForgotModal(portalType) {
+      const modal = document.getElementById('forgot-modal');
+      const modalTitle = document.getElementById('modal-title');
+      if (modal) {
+        if (modalTitle) {
+          modalTitle.textContent = portalType === 'mahasiswa' 
+            ? 'Lupa Sandi Portal Mahasiswa' 
+            : 'Lupa Sandi Akses Dosen';
+        }
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      }
+    }
+
+    function closeForgotModal() {
+      const modal = document.getElementById('forgot-modal');
+      if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+      }
+    }
+
+    // Initialize initial view state on load
+    window.addEventListener('DOMContentLoaded', () => {
+      switchView('selection');
+    });
+  </script>
+</body>
+</html>
